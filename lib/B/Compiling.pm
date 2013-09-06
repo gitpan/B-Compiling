@@ -6,7 +6,7 @@ BEGIN {
   $B::Compiling::AUTHORITY = 'cpan:FLORA';
 }
 {
-  $B::Compiling::VERSION = '0.03';
+  $B::Compiling::VERSION = '0.04';
 }
 # ABSTRACT: Expose PL_compiling to perl
 
