@@ -2,13 +2,21 @@ use strict;
 use warnings;
 
 package B::Compiling;
-
-our $VERSION = '0.02';
+BEGIN {
+  $B::Compiling::AUTHORITY = 'cpan:FLORA';
+}
+{
+  $B::Compiling::VERSION = '0.03';
+}
+# ABSTRACT: Expose PL_compiling to perl
 
 use B;
 use XSLoader;
 
-XSLoader::load(__PACKAGE__, $VERSION);
+XSLoader::load(
+    __PACKAGE__,
+    exists $B::Compiling::{VERSION} ? ${ $B::Compiling::{VERSION} } : (),
+);
 
 use Sub::Exporter -setup => {
     exports => ['PL_compiling'],
@@ -18,6 +26,10 @@ use Sub::Exporter -setup => {
 1;
 
 __END__
+
+=pod
+
+=encoding utf-8
 
 =head1 NAME
 
@@ -49,13 +61,13 @@ L<B>
 
 =head1 AUTHOR
 
-Florian Ragwitz E<lt>rafl@debian.orgE<gt>
+Florian Ragwitz <rafl@debian.org>
 
 =head1 COPYRIGHT AND LICENSE
 
-Copyright (c) 2008  Florian Ragwitz
+This software is copyright (c) 2013 by Florian Ragwitz.
 
-This module is free software. You can distribute it under the same terms as
-perl itself.
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
 
 =cut

@@ -1,14 +1,71 @@
+
 use strict;
 use warnings;
-use inc::Module::Install;
 
-name 'B-Compiling';
-all_from 'lib/B/Compiling.pm';
 
-requires 'B';
-requires 'XSLoader';
-requires 'Sub::Exporter';
 
-extra_tests;
+use ExtUtils::MakeMaker 6.30;
 
-WriteAll;
+
+
+my %WriteMakefileArgs = (
+  "ABSTRACT" => "Expose PL_compiling to perl",
+  "AUTHOR" => "Florian Ragwitz <rafl\@debian.org>",
+  "BUILD_REQUIRES" => {},
+  "CONFIGURE_REQUIRES" => {
+    "ExtUtils::MakeMaker" => "6.30"
+  },
+  "DISTNAME" => "B-Compiling",
+  "EXE_FILES" => [],
+  "LICENSE" => "perl",
+  "NAME" => "B::Compiling",
+  "PREREQ_PM" => {
+    "B" => 0,
+    "Sub::Exporter" => 0,
+    "XSLoader" => 0,
+    "strict" => 0,
+    "warnings" => 0
+  },
+  "TEST_REQUIRES" => {
+    "Test::More" => 0
+  },
+  "VERSION" => "0.03",
+  "test" => {
+    "TESTS" => "t/*.t"
+  }
+);
+
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.63_03) } ) {
+  my $tr = delete $WriteMakefileArgs{TEST_REQUIRES};
+  my $br = $WriteMakefileArgs{BUILD_REQUIRES};
+  for my $mod ( keys %$tr ) {
+    if ( exists $br->{$mod} ) {
+      $br->{$mod} = $tr->{$mod} if $tr->{$mod} > $br->{$mod};
+    }
+    else {
+      $br->{$mod} = $tr->{$mod};
+    }
+  }
+}
+
+unless ( eval { ExtUtils::MakeMaker->VERSION(6.56) } ) {
+  my $br = delete $WriteMakefileArgs{BUILD_REQUIRES};
+  my $pp = $WriteMakefileArgs{PREREQ_PM};
+  for my $mod ( keys %$br ) {
+    if ( exists $pp->{$mod} ) {
+      $pp->{$mod} = $br->{$mod} if $br->{$mod} > $pp->{$mod};
+    }
+    else {
+      $pp->{$mod} = $br->{$mod};
+    }
+  }
+}
+
+delete $WriteMakefileArgs{CONFIGURE_REQUIRES}
+  unless eval { ExtUtils::MakeMaker->VERSION(6.52) };
+
+WriteMakefile(%WriteMakefileArgs);
+
+
+
